@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.urls import reverse
 
 from student_management_app.EmailBackEnd import EmailBackEnd
@@ -95,7 +95,7 @@ def signup_admin(request):
 
 def signup_student(request):
     courses=Courses.objects.all()
-    session_years=SessionYearModel.object.all()
+    session_years=SessionYearModel.objects.all()
     return render(request,"signup_student_page.html",{"courses":courses,"session_years":session_years})
 
 def signup_staff(request):
@@ -142,24 +142,46 @@ def do_signup_student(request):
     course_id = request.POST.get("course")
     sex = request.POST.get("sex")
 
-    profile_pic = request.FILES['profile_pic']
-    fs = FileSystemStorage()
-    filename = fs.save(profile_pic.name, profile_pic)
-    profile_pic_url = fs.url(filename)
+    # Prevent duplicate users
+    if CustomUser.objects.filter(username=username).exists():
+        messages.error(request, "Username already exists.")
+        return redirect("signup_student")
 
-    #try:
-    user = CustomUser.objects.create_user(username=username, password=password, email=email, last_name=last_name,
-                                          first_name=first_name, user_type=3)
-    user.students.address = address
-    course_obj = Courses.objects.get(id=course_id)
-    user.students.course_id = course_obj
-    session_year = SessionYearModel.object.get(id=session_year_id)
-    user.students.session_year_id = session_year
-    user.students.gender = sex
-    user.students.profile_pic = profile_pic_url
-    user.save()
-    messages.success(request, "Successfully Added Student")
+    if CustomUser.objects.filter(email=email).exists():
+        messages.error(request, "Email already in use.")
+        return redirect("signup_student")
+
+    # Profile pic handling
+    profile_pic = request.FILES.get("profile_pic", None)
+    if profile_pic:
+        fs = FileSystemStorage()
+        filename = fs.save(profile_pic.name, profile_pic)
+        profile_pic_url = fs.url(filename)
+    else:
+        profile_pic_url = None
+
+    # Create user
+    user = CustomUser.objects.create_user(
+        username=username,
+        password=password,
+        email=email,
+        last_name=last_name,
+        first_name=first_name,
+        user_type=3
+    )
+
+    # Add student-specific info
+    student = user.students
+    student.address = address
+    student.course_id = Courses.objects.get(id=course_id)
+    student.session_year_id = SessionYearModel.objects.get(id=session_year_id)
+    student.gender = sex
+    student.profile_pic = profile_pic_url
+    student.save()
+
+    messages.success(request, "Successfully added student.")
     return HttpResponseRedirect(reverse("show_login"))
+
     #except:
      #   messages.error(request, "Failed to Add Student")
       #  return HttpResponseRedirect(reverse("show_login"))

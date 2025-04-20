@@ -61,7 +61,7 @@ def staff_home(request):
 
 def staff_take_attendance(request):
     subjects=Subjects.objects.filter(staff_id=request.user.id)
-    session_years=SessionYearModel.object.all()
+    session_years=SessionYearModel.objects.all()
     return render(request,"staff_template/staff_take_attendance.html",{"subjects":subjects,"session_years":session_years})
 
 @csrf_exempt
@@ -106,7 +106,7 @@ def save_attendance_data(request):
 
 def staff_update_attendance(request):
     subjects=Subjects.objects.filter(staff_id=request.user.id)
-    session_year_id=SessionYearModel.object.all()
+    session_year_id=SessionYearModel.objects.all()
     return render(request,"staff_template/staff_update_attendance.html",{"subjects":subjects,"session_year_id":session_year_id})
 
 @csrf_exempt
@@ -247,7 +247,7 @@ def staff_all_notification(request):
 
 def staff_add_result(request):
     subjects=Subjects.objects.filter(staff_id=request.user.id)
-    session_years=SessionYearModel.object.all()
+    session_years=SessionYearModel.objects.all()
     return render(request,"staff_template/staff_add_result.html",{"subjects":subjects,"session_years":session_years})
 
 def save_student_result(request):
@@ -295,7 +295,7 @@ def fetch_result_student(request):
 
 def start_live_classroom(request):
     subjects=Subjects.objects.filter(staff_id=request.user.id)
-    session_years=SessionYearModel.object.all()
+    session_years=SessionYearModel.objects.all()
     return render(request,"staff_template/start_live_classroom.html",{"subjects":subjects,"session_years":session_years})
 
 def start_live_classroom_process(request):

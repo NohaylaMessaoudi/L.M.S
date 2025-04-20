@@ -458,7 +458,7 @@ def staff_disapprove_leave(request,leave_id):
 
 def admin_view_attendance(request):
     subjects=Subjects.objects.all()
-    session_year_id=SessionYearModel.object.all()
+    session_year_id=SessionYearModel.objects.all()
     return render(request,"hod_template/admin_view_attendance.html",{"subjects":subjects,"session_year_id":session_year_id})
 
 @csrf_exempt
