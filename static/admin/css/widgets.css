@@ -37,11 +37,11 @@
 }
 
 .selector .selector-filter {
-    background: white;
-    border: 1px solid #ccc;
+    background: rgb(218, 172, 172);
+    border: 1px solid #d2bcbc;
     border-width: 0 1px;
     padding: 8px;
-    color: #999;
+    color: #8f8080;
     font-size: 10px;
     margin: 0;
     text-align: left;
@@ -133,7 +133,7 @@ a.selector-chooseall, a.selector-clearall {
 
 a.active.selector-chooseall:focus, a.active.selector-clearall:focus,
 a.active.selector-chooseall:hover, a.active.selector-clearall:hover {
-    color: #447e9b;
+    color: #5c8ea7;
 }
 
 a.active.selector-chooseall, a.active.selector-clearall {
